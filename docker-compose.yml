@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  nginx:
+    image: nginx:alpine
+    container_name: focusblock_nginx
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+      #- "443:443" # Uncomment if you configure Cloudflare Full/Strict SSL with origin certs later
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    networks:
+      - focusblock_network
+    depends_on:
+      - frontend
+
+  backend:
+    image: ghcr.io/${GITHUB_REPOSITORY_OWNER}/focusblock-backend:latest
+    container_name: focusblock_backend
+    restart: always
+    # Exposing the port is no longer necessary! Nginx routes everything.
+    # ports:
+    #   - "8000:8000"
+    env_file:
+      - .env.backend
+    networks:
+      - focusblock_network
+    # Expose the server's local host so backend can access native Ollama installation
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  frontend:
+    image: ghcr.io/${GITHUB_REPOSITORY_OWNER}/focusblock-frontend:latest
+    container_name: focusblock_frontend
+    restart: always
+    # Ports hidden from public because Nginx serves as the proxy
+    # ports:
+    #   - "3000:3000"
+    env_file:
+      - .env.frontend
+    networks:
+      - focusblock_network
+    depends_on:
+      - backend
+
+networks:
+  focusblock_network:
+    driver: bridge
