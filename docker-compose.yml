@@ -17,7 +17,7 @@ services:
       - frontend
 
   backend:
-    image: ghcr.io/${GITHUB_REPOSITORY_OWNER}/focusblock-backend:latest
+    image: ghcr.io/${REPO_OWNER}/focusblock-backend:latest
     container_name: focusblock_backend
     restart: always
     # Exposing the port is no longer necessary! Nginx routes everything.
@@ -32,7 +32,7 @@ services:
       - "host.docker.internal:host-gateway"
 
   frontend:
-    image: ghcr.io/${GITHUB_REPOSITORY_OWNER}/focusblock-frontend:latest
+    image: ghcr.io/${REPO_OWNER}/focusblock-frontend:latest
     container_name: focusblock_frontend
     restart: always
     # Ports hidden from public because Nginx serves as the proxy
