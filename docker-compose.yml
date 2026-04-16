@@ -11,6 +11,7 @@ services:
       #- "443:443" # Uncomment if you configure Cloudflare Full/Strict SSL with origin certs later
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./certs:/etc/nginx/ssl:ro
     networks:
       - focusblock_network
     depends_on:

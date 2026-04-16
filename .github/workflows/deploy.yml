@@ -128,6 +128,11 @@ jobs:
             cd /opt/focusblock
             export REPO_OWNER=$(echo "${{ github.repository_owner }}" | tr 'A-Z' 'a-z')
             
+            mkdir -p certs
+            if [ ! -f certs/cert.pem ]; then
+              openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout certs/key.pem -out certs/cert.pem -subj "/CN=focusblock.l4sith.dev"
+            fi
+            
             echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
             
             docker compose pull
